@@ -3,6 +3,7 @@
 #include<vector>
 #include<algorithm>
 #include<set>
+#include<queue>
 #pragma warning( disable : 4996 )
 typedef struct MyStruct
 {
@@ -11,21 +12,22 @@ typedef struct MyStruct
 	int finishtime;
 	
 }Vertices;
-Vertices vertices[9999];
-int Gstep[9999][9999];
-char Gedge[9999][9999];
-//std::vector<std::set<double>> Tree;
-std::set<double>TemTree;
-int Treetime;
-bool IssinglyConnectedGraph = true;
-int componentBackedgenum = 0; int notsamecomponentCrossgenum = 0;
-void DFS(int start, const int V)
+Vertices vertices[9999]; //點
+int Gstep[9999][9999]; //邊
+char Gedge[9999][9999]; //邊是屬於哪四種
+std::set<double>TemTree;//樹的集合
+int Treetime;//時間
+bool IssinglyConnectedGraph = true;//是否為singly connected
+int componentBackedgenum = 0; //一個component是否超過1個backedge
+int notsamecomponentCrossgenum = 0; //一個component是否連到其他component超過1個
+void DFS(int start, const int V)//起始位置 跟有幾個 vertices
 {
-
+	if (IssinglyConnectedGraph == false) return;
 	for (int i = 0; i < V; i++)
 	{
 		if (Gstep[start][i] == 1 && Gedge[start][i] == 'E')  //兩個點有連接且邊沒用過
 		{
+			
 
 			if (vertices[i].color == 'W') //點為白色
 			{
@@ -33,42 +35,53 @@ void DFS(int start, const int V)
 				TemTree.insert(i);
 				Gedge[start][i] = 'T';//treeedge
 				vertices[i].startime = Treetime;
-				vertices[i].color = 'G';
+				vertices[i].color = 'G';//變成灰色
 				Treetime++;
 				DFS(i, V);
 				vertices[i].finishtime = Treetime;
 				Treetime++;
-				vertices[i].color = 'B';
+				vertices[i].color = 'B';//最後變黑色
 			}
 			else if (vertices[i].color == 'G')//點為灰色
 			{
 				Gedge[start][i] = 'B';//Backedge
-				componentBackedgenum++;
-				/*if (componentBackedgenum > 1)
+				componentBackedgenum++; 
+				//if (componentBackedgenum > 1)//看是否這個component有兩個以上backedge
+				//	IssinglyConnectedGraph = false;
+				/*int a = 0;
+				for (int j = 0; j < V; j++)
+				{
+					if (Gedge[start][j] == 'B')
+					{
+						a++;
+					}
+				}
+				if (a > 1)
 					IssinglyConnectedGraph = false;*/
 			}
 			else if (vertices[i].color == 'B')//點為黑色
 			{
 				int exist = TemTree.count(i);
-				
-				if (exist == 1)
+				if (exist == 1)//同一個component
 				{
-					if (vertices[start].startime < vertices[i].startime) //比他早發現
+					//vertices[start].startime < vertices[i].startime
+					if (Treetime> vertices[i].finishtime) //比他早發現
 					{
 						Gedge[start][i] = 'F'; //FowardEdge
 						IssinglyConnectedGraph = false;
 					}
 					else {
-						Gedge[start][i] = 'C';
+						Gedge[start][i] = 'C'; //Crossedge
 						IssinglyConnectedGraph = false;
 					}
 				}
-				else {
+				else if(exist==0) 
+				{
 					Gedge[start][i] = 'C'; //CrossEdge
-					notsamecomponentCrossgenum++;
-					if(notsamecomponentCrossgenum>1)
-						IssinglyConnectedGraph = false;
-					
+					//notsamecomponentCrossgenum++;
+					//if(notsamecomponentCrossgenum>1)//看是否這個component與其他component有兩個以上Crossedge
+					//	IssinglyConnectedGraph = false;
+					//
 				}
 				
 			}
@@ -97,8 +110,10 @@ int main() {
 		componentBackedgenum = 0;
 		notsamecomponentCrossgenum = 0;
 		IssinglyConnectedGraph = true;
+		
 		for (int j = 0; j < V; j++)
 		{
+			
 			vertices[j].color = 'W';
 			vertices[j].finishtime = 0;
 			vertices[j].startime = 0;
@@ -115,51 +130,107 @@ int main() {
 		{
 			
 			scanf("%d %d",&start,&finish);
-			Gstep[start][finish] =1;
+			//if(start!=finish)
+				Gstep[start][finish] =1;
+			
+		}
+	
+
+
+		for (int k = 0; k < V; k++)
+		{
+			if (IssinglyConnectedGraph==true)
+			{
+				TemTree.clear();//清空 樹的集合(這個component)
+				componentBackedgenum = 0;
+				notsamecomponentCrossgenum = 0;
+				Treetime = 0;
+				if (vertices[k].color == 'W')
+				{
+					vertices[k].color = 'G';
+					vertices[k].startime = Treetime;
+					Treetime++;
+					DFS(k, V);
+					vertices[k].finishtime = Treetime;
+					Treetime++;
+					vertices[k].color = 'B';
+				}
+
+			/*	for (int p = 0; p < V; p++)
+				{
+
+					for (int o = 0; o < V; o++)
+					{
+						if (Gedge[p][o] != 'E')
+							std::cout << Gedge[p][o];
+						else
+							std::cout << ",";
+					}
+					std::cout << "\n";
+				}
+				std::cout << "\n";*/
+
+				if (IssinglyConnectedGraph == false) break;
+				else {
+					Treetime = 0;
+					TemTree.clear();
+					for (int z = 0; z < V; z++)
+					{
+
+						vertices[z].color = 'W';
+						vertices[z].finishtime = 0;
+						vertices[z].startime = 0;
+						for (int x = 0; x < V; x++) {
+							Gedge[z][x] = 'E';
+						}
+					}
+				}
+
+
+			}
+			else
+				break;
+				
+			
 			
 		}
 		
+
+
+
+
+	
+			//for (int j = 0; j < E; j++)
+			//{
+
+			//	if (IssinglyConnectedGraph)
+			//	{
+			//		TemTree.clear();//清空 樹的集合(這個component)
+			//		componentBackedgenum = 0;
+			//		notsamecomponentCrossgenum = 0;
+
+			//		if (vertices[j].color == 'W')
+			//		{
+			//			vertices[j].color = 'G';
+			//			vertices[j].startime = Treetime;
+			//			Treetime++;
+			//			DFS(j, V);
+			//			vertices[j].finishtime = Treetime;
+			//			Treetime++;
+			//			vertices[j].color = 'B';
+			//		}
+			//	}
+			//	else break;
+
+			//}
+
+
+			
 		
-		for (int j = 0; j < E; j++)
-		{
-
-			TemTree.clear();
-			componentBackedgenum = 0;
-			notsamecomponentCrossgenum = 0;
-			if (vertices[j].color == 'W')
-			{
-				vertices[j].color = 'G';
-				vertices[j].startime = Treetime;
-				Treetime++;
-				DFS(j, V);
-				vertices[j].finishtime = Treetime;
-				Treetime++;
-				vertices[j].color = 'B';
-			}
-			else {
-				DFS(j, V);
-			}
-
-		}
 
 
 
-		//for (int j = 0; j < V; j++)
-		//{
 
-		//	std::cout << j<<":  " << vertices[j].startime << "&" << vertices[j].finishtime << "\n";
-
-		//}
-		//for (int j = 0; j < V; j++)
-		//{
-
-		//	for (int k = 0; k < V; k++)
-		//	{
-		//		std::cout << Gedge[j][k];
-		//	}
-		//	std::cout << "\n";
-		//}
-		//std::cout << "\n";
 
 		if (IssinglyConnectedGraph)
 			printf("%d YES\n", i + 1);
