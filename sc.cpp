@@ -6,7 +6,7 @@
 //int Grecord[9999][9999];
 //int G[9999][9999];
 //bool v[9999];
-//void dfs(int V, int x, int root)//x ¬°ªì©l
+//void dfs(int V, int x, int root)//x ç‚ºåˆå§‹
 //{
 //	if (IssinglyConnectedGraph == false)
 //		return;
@@ -25,10 +25,10 @@
 //				}
 //
 //
-//				v[i] = 1;//¶]¹LªºÂI³]¬°¥H¶]¹L 
-//				//Gstep[x][i] = 0; //³o­Ó¸ô®|§R±¼
+//				v[i] = 1;//è·‘éçš„é»è¨­ç‚ºä»¥è·‘é 
+//				//Gstep[x][i] = 0; //é€™å€‹è·¯å¾‘åˆªæ‰
 //				dfs(V, i, root);
-//				//Gstep[x][i] = 1;//¸ô®|¦^Âk
+//				//Gstep[x][i] = 1;//è·¯å¾‘å›æ­¸
 //				v[i] = 0;
 //
 //			}
@@ -38,19 +38,19 @@
 //}
 //int main() {
 //
-//	int N; //´Xµ§´ú¸ê 
+//	int N; //å¹¾ç­†æ¸¬è³‡ 
 //	scanf("%d", &N);
 //	for (int i = 0; i < N; i++)
 //	{
 //
 //
-//		int V = 0;  //´X­ÓÂI 
+//		int V = 0;  //å¹¾å€‹é» 
 //		scanf("%d", &V);
 //
 //
 //
 //
-//		//­«¸m Âk0 
+//		//é‡ç½® æ­¸0 
 //
 //		IssinglyConnectedGraph = true;
 //		for (int j = 0; j < V; j++)
@@ -64,7 +64,7 @@
 //			}
 //		}
 //
-//		int E = 0; //´X±øÃä 
+//		int E = 0; //å¹¾æ¢é‚Š 
 //		scanf("%d", &E);
 //		int start, finish;
 //		for (int j = 0; j < E; j++)
@@ -73,6 +73,8 @@
 //			scanf("%d %d", &start, &finish);
 //			/*if (start != finish)
 //			{*/
+//        if(Gstep[start][finish] == 1)
+//            IssinglyConnectedGraph=false;
 //				Gstep[start][finish] = 1;
 //
 //				Grecord[start][finish] = Gstep[start][finish];
