@@ -10,44 +10,44 @@ typedef struct MyStruct
 	char color;
 	int startime;
 	int finishtime;
-	
+
 }Vertices;
-Vertices vertices[9999]; //ÂI
-int Gstep[9999][9999]; //Ãä
-char Gedge[9999][9999]; //Ãä¬OÄİ©ó­ş¥|ºØ
-std::set<double>TemTree;//¾ğªº¶°¦X
-int Treetime;//®É¶¡
-bool IssinglyConnectedGraph = true;//¬O§_¬°singly connected
-int componentBackedgenum = 0; //¤@­Ócomponent¬O§_¶W¹L1­Óbackedge
-int notsamecomponentCrossgenum = 0; //¤@­Ócomponent¬O§_³s¨ì¨ä¥Lcomponent¶W¹L1­Ó
-void DFS(int start, const int V)//°_©l¦ì¸m ¸ò¦³´X­Ó vertices
+Vertices vertices[9999]; //é»
+int Gstep[9999][9999]; //é‚Š
+char Gedge[9999][9999]; //é‚Šæ˜¯å±¬æ–¼å“ªå››ç¨®
+std::set<double>TemTree;//æ¨¹çš„é›†åˆ
+int Treetime;//æ™‚é–“
+bool IssinglyConnectedGraph = true;//æ˜¯å¦ç‚ºsingly connected
+int componentBackedgenum = 0; //ä¸€å€‹componentæ˜¯å¦è¶…é1å€‹backedge
+int notsamecomponentCrossgenum = 0; //ä¸€å€‹componentæ˜¯å¦é€£åˆ°å…¶ä»–componentè¶…é1å€‹
+void DFS(int start, const int V)//èµ·å§‹ä½ç½® è·Ÿæœ‰å¹¾å€‹ vertices
 {
 	if (IssinglyConnectedGraph == false) return;
 	for (int i = 0; i < V; i++)
 	{
-		if (Gstep[start][i] == 1 && Gedge[start][i] == 'E')  //¨â­ÓÂI¦³³s±µ¥BÃä¨S¥Î¹L
+		if (Gstep[start][i] == 1 && Gedge[start][i] == 'E')  //å…©å€‹é»æœ‰é€£æ¥ä¸”é‚Šæ²’ç”¨é
 		{
-			
 
-			if (vertices[i].color == 'W') //ÂI¬°¥Õ¦â
+
+			if (vertices[i].color == 'W') //é»ç‚ºç™½è‰²
 			{
 				TemTree.insert(start);
 				TemTree.insert(i);
 				Gedge[start][i] = 'T';//treeedge
 				vertices[i].startime = Treetime;
-				vertices[i].color = 'G';//ÅÜ¦¨¦Ç¦â
+				vertices[i].color = 'G';//è®Šæˆç°è‰²
 				Treetime++;
 				DFS(i, V);
 				vertices[i].finishtime = Treetime;
 				Treetime++;
-				vertices[i].color = 'B';//³Ì«áÅÜ¶Â¦â
+				vertices[i].color = 'B';//æœ€å¾Œè®Šé»‘è‰²
 			}
-			else if (vertices[i].color == 'G')//ÂI¬°¦Ç¦â
+			else if (vertices[i].color == 'G')//é»ç‚ºç°è‰²
 			{
 				Gedge[start][i] = 'B';//Backedge
-				componentBackedgenum++; 
-				//if (componentBackedgenum > 1)//¬İ¬O§_³o­Ócomponent¦³¨â­Ó¥H¤Wbackedge
-				//	IssinglyConnectedGraph = false;
+				componentBackedgenum++;
+				if (componentBackedgenum > 1)//çœ‹æ˜¯å¦é€™å€‹componentæœ‰å…©å€‹ä»¥ä¸Šbackedge
+					IssinglyConnectedGraph = false;
 				/*int a = 0;
 				for (int j = 0; j < V; j++)
 				{
@@ -59,13 +59,13 @@ void DFS(int start, const int V)//°_©l¦ì¸m ¸ò¦³´X­Ó vertices
 				if (a > 1)
 					IssinglyConnectedGraph = false;*/
 			}
-			else if (vertices[i].color == 'B')//ÂI¬°¶Â¦â
+			else if (vertices[i].color == 'B')//é»ç‚ºé»‘è‰²
 			{
 				int exist = TemTree.count(i);
-				if (exist == 1)//¦P¤@­Ócomponent
+				if (exist == 1)//åŒä¸€å€‹component
 				{
 					//vertices[start].startime < vertices[i].startime
-					if (Treetime> vertices[i].finishtime) //¤ñ¥L¦­µo²{
+					if (Treetime > vertices[i].finishtime) //æ¯”ä»–æ—©ç™¼ç¾
 					{
 						Gedge[start][i] = 'F'; //FowardEdge
 						IssinglyConnectedGraph = false;
@@ -75,45 +75,45 @@ void DFS(int start, const int V)//°_©l¦ì¸m ¸ò¦³´X­Ó vertices
 						IssinglyConnectedGraph = false;
 					}
 				}
-				else if(exist==0) 
+				else if (exist == 0)
 				{
 					Gedge[start][i] = 'C'; //CrossEdge
-					//notsamecomponentCrossgenum++;
-					//if(notsamecomponentCrossgenum>1)//¬İ¬O§_³o­Ócomponent»P¨ä¥Lcomponent¦³¨â­Ó¥H¤WCrossedge
-					//	IssinglyConnectedGraph = false;
-					//
+					notsamecomponentCrossgenum++;
+					if(notsamecomponentCrossgenum>1)//çœ‹æ˜¯å¦é€™å€‹componentèˆ‡å…¶ä»–componentæœ‰å…©å€‹ä»¥ä¸ŠCrossedge
+						IssinglyConnectedGraph = false;
+					
 				}
-				
+
 			}
 
 		}
 	}
-	
-	
+
+
 }
 int main() {
 
-	int N; //´Xµ§´ú¸ê
+	int N; //å¹¾ç­†æ¸¬è³‡
 	scanf("%d", &N);
 	for (int i = 0; i < N; i++)
 	{
-		
-	
-		int V=0;  //´X­ÓÂI
+
+
+		int V = 0;  //å¹¾å€‹é»
 		scanf("%d", &V);
-		
-		
-		
-	
-		//­«¸m Âk0
+
+
+
+
+		//é‡ç½® æ­¸0
 		Treetime = 0;
 		componentBackedgenum = 0;
 		notsamecomponentCrossgenum = 0;
 		IssinglyConnectedGraph = true;
-		
+
 		for (int j = 0; j < V; j++)
 		{
-			
+
 			vertices[j].color = 'W';
 			vertices[j].finishtime = 0;
 			vertices[j].startime = 0;
@@ -122,26 +122,27 @@ int main() {
 				Gedge[j][k] = 'E';
 			}
 		}
-	
-		int E=0; //´X±øÃä
+
+		int E = 0; //å¹¾æ¢é‚Š
 		scanf("%d", &E);
 		int start, finish;
-		for (int j = 0; j <E; j++)
+		for (int j = 0; j < E; j++)
 		{
-			
-			scanf("%d %d",&start,&finish);
+
+			scanf("%d %d", &start, &finish);
 			//if(start!=finish)
-				Gstep[start][finish] =1;
-			
+			if (Gstep[start][finish] == 1) IssinglyConnectedGraph = false;
+			Gstep[start][finish] = 1;
+
 		}
-	
+
 
 
 		for (int k = 0; k < V; k++)
 		{
-			if (IssinglyConnectedGraph==true)
+			if (IssinglyConnectedGraph == true)
 			{
-				TemTree.clear();//²MªÅ ¾ğªº¶°¦X(³o­Ócomponent)
+				TemTree.clear();//æ¸…ç©º æ¨¹çš„é›†åˆ(é€™å€‹component)
 				componentBackedgenum = 0;
 				notsamecomponentCrossgenum = 0;
 				Treetime = 0;
@@ -156,19 +157,18 @@ int main() {
 					vertices[k].color = 'B';
 				}
 
-			/*	for (int p = 0; p < V; p++)
-				{
-
-					for (int o = 0; o < V; o++)
+				/*	for (int p = 0; p < V; p++)
 					{
-						if (Gedge[p][o] != 'E')
-							std::cout << Gedge[p][o];
-						else
-							std::cout << ",";
+						for (int o = 0; o < V; o++)
+						{
+							if (Gedge[p][o] != 'E')
+								std::cout << Gedge[p][o];
+							else
+								std::cout << ",";
+						}
+						std::cout << "\n";
 					}
-					std::cout << "\n";
-				}
-				std::cout << "\n";*/
+					std::cout << "\n";*/
 
 				if (IssinglyConnectedGraph == false) break;
 				else {
@@ -190,43 +190,44 @@ int main() {
 			}
 			else
 				break;
-				
-			
-			
+
+
+
 		}
-		
-
-
-
+			
 
 	
-			//for (int j = 0; j < E; j++)
-			//{
-
-			//	if (IssinglyConnectedGraph)
-			//	{
-			//		TemTree.clear();//²MªÅ ¾ğªº¶°¦X(³o­Ócomponent)
-			//		componentBackedgenum = 0;
-			//		notsamecomponentCrossgenum = 0;
-
-			//		if (vertices[j].color == 'W')
-			//		{
-			//			vertices[j].color = 'G';
-			//			vertices[j].startime = Treetime;
-			//			Treetime++;
-			//			DFS(j, V);
-			//			vertices[j].finishtime = Treetime;
-			//			Treetime++;
-			//			vertices[j].color = 'B';
-			//		}
-			//	}
-			//	else break;
-
-			//}
 
 
-			
-		
+
+
+		//for (int j = 0; j < E; j++)
+		//{
+
+		//	if (IssinglyConnectedGraph)
+		//	{
+		//		TemTree.clear();//æ¸…ç©º æ¨¹çš„é›†åˆ(é€™å€‹component)
+		//		componentBackedgenum = 0;
+		//		notsamecomponentCrossgenum = 0;
+
+		//		if (vertices[j].color == 'W')
+		//		{
+		//			vertices[j].color = 'G';
+		//			vertices[j].startime = Treetime;
+		//			Treetime++;
+		//			DFS(j, V);
+		//			vertices[j].finishtime = Treetime;
+		//			Treetime++;
+		//			vertices[j].color = 'B';
+		//		}
+		//	}
+		//	else break;
+
+		//}
+
+
+
+
 
 
 
@@ -236,7 +237,7 @@ int main() {
 			printf("%d YES\n", i + 1);
 		else
 			printf("%d NO\n", i + 1);
-		
+
 	}
 	system("pause");
 	return 0;
